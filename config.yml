@@ -1,0 +1,35 @@
+# Daily Check-In Monitor Configuration
+# This file contains all settings for the Daily Check-In Monitor
+
+# Repository settings (required)
+repo_owner: "your-github-username"  # Replace with your GitHub username
+repo_name: "daily-checkin-monitor"  # Replace with your repository name
+
+# NOTE: Personal Access Token is now entered securely via the app interface
+# Do NOT put your PAT in this file - it will be stored locally in your browser
+
+# Check-in settings
+checkin_schedule: "08:00"  # Daily check-in time (HH:MM UTC)
+alert_time: "20:00"  # Time to check for missed check-ins (HH:MM UTC)
+grace_period_hours: 4  # Hours after checkin_schedule before considering missed
+
+# Emergency contact
+emergency_email: "your-email@example.com"
+
+# Notification settings
+notification_subject: "Daily Check-In Reminder"
+notification_message: "This is an automated reminder from your Daily Check-In Monitor.\n\nYou haven't checked in today. Please visit your check-in page and click the check-in button.\n\nCheck-in URL: https://{{repo_owner}}.github.io/{{repo_name}}/\n\nIf you're unable to check in, please contact your emergency contact."
+
+# SendGrid settings (for email notifications)
+# Sign up at https://sendgrid.com and get an API key
+sendgrid_api_key: "your-sendgrid-api-key"  # Set this in GitHub Secrets as SENDGRID_API_KEY
+sendgrid_from_email: "noreply@yourdomain.com"  # Verified sender email in SendGrid
+
+# SMTP settings (alternative to SendGrid)
+# For Gmail: use smtp.gmail.com, port 587, your Gmail address
+# For other providers: check their SMTP settings
+smtp_server: "smtp.gmail.com"
+smtp_port: 587
+smtp_username: "your-email@gmail.com"  # Set in GitHub Secrets as SMTP_USERNAME
+smtp_password: "your-app-password"     # Set in GitHub Secrets as SMTP_PASSWORD (use App Password for Gmail)
+smtp_from_email: "your-email@gmail.com"

@@ -1,0 +1,125 @@
+name: Daily Check-In Monitor
+
+on:
+  schedule:
+    # Check every day at 8 PM UTC (configurable in config.yml)
+    - cron: '0 20 * * *'
+  repository_dispatch:
+    types: [checkin]
+  workflow_dispatch:
+
+jobs:
+  checkin-handler:
+    if: github.event_name == 'repository_dispatch' && github.event.event_type == 'checkin'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update checkins.json
+        run: |
+          # Get the check-in date from the dispatch payload
+          CHECKIN_DATE="${{ github.event.client_payload.date }}"
+
+          # Create or update checkins.json
+          if [ ! -f checkins.json ]; then
+            echo "[]" > checkins.json
+          fi
+
+          # Add the date if not already present
+          jq --arg date "$CHECKIN_DATE" '. + [$date] | unique' checkins.json > checkins_temp.json
+          mv checkins_temp.json checkins.json
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add checkins.json
+          git commit -m "Add check-in for $CHECKIN_DATE" || echo "No changes to commit"
+          git push
+
+  daily-check:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+  daily-check:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for missed check-in
+        run: |
+          # Read config.yml
+          CONFIG=$(cat config.yml)
+
+          # Extract values (simple parsing)
+          ALERT_TIME=$(echo "$CONFIG" | grep "alert_time:" | cut -d'"' -f2)
+          GRACE_PERIOD=$(echo "$CONFIG" | grep "grace_period_hours:" | cut -d' ' -f2)
+          EMERGENCY_EMAIL=$(echo "$CONFIG" | grep "emergency_email:" | cut -d'"' -f2)
+          SUBJECT=$(echo "$CONFIG" | grep "notification_subject:" | cut -d'"' -f2)
+          MESSAGE=$(echo "$CONFIG" | grep "notification_message:" | cut -d'"' -f2)
+          REPO_OWNER=$(echo "$CONFIG" | grep "repo_owner:" | cut -d'"' -f2)
+          REPO_NAME=$(echo "$CONFIG" | grep "repo_name:" | cut -d'"' -f2)
+          SMTP_FROM=$(echo "$CONFIG" | grep "smtp_from_email:" | cut -d'"' -f2)
+
+          # Replace placeholders in message
+          MESSAGE=$(echo "$MESSAGE" | sed "s/{{repo_owner}}/$REPO_OWNER/g" | sed "s/{{repo_name}}/$REPO_NAME/g")
+
+          # Check if checkins.json exists and contains today's date
+          TODAY=$(date -u +%Y-%m-%d)
+          if [ -f checkins.json ]; then
+            CHECKED_IN=$(jq -r --arg date "$TODAY" 'contains([$date])' checkins.json)
+          else
+            CHECKED_IN=false
+          fi
+
+          if [ "$CHECKED_IN" = "false" ]; then
+            echo "No check-in detected for today. Sending notification."
+            # Send email using Python SMTP
+            python3 -c "
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import os
+
+# Email settings
+smtp_server = 'smtp.gmail.com'
+smtp_port = 587
+smtp_username = os.environ['SMTP_USERNAME']
+smtp_password = os.environ['SMTP_PASSWORD']
+from_email = '$SMTP_FROM'
+to_email = '$EMERGENCY_EMAIL'
+subject = '$SUBJECT'
+message = '''$MESSAGE'''
+
+# Create message
+msg = MIMEMultipart()
+msg['From'] = from_email
+msg['To'] = to_email
+msg['Subject'] = subject
+
+msg.attach(MIMEText(message, 'plain'))
+
+# Send email
+try:
+    server = smtplib.SMTP(smtp_server, smtp_port)
+    server.starttls()
+    server.login(smtp_username, smtp_password)
+    text = msg.as_string()
+    server.sendmail(from_email, to_email, text)
+    server.quit()
+    print('Email sent successfully')
+except Exception as e:
+    print(f'Failed to send email: {e}')
+    exit(1)
+            "
+          else
+            echo "Check-in confirmed for today."
+          fi

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Check-In Monitor</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Daily Check-In Monitor</h1>
+        <p class="subtitle">Inspired by "Are You Alive" (死了吗) - Keep track of your daily check-ins</p>
+
+        <div id="setup-section" class="hidden">
+            <h2>Setup Required</h2>
+            <p>Please configure your settings in <code>config.yml</code> and refresh this page.</p>
+            <ul>
+                <li>Set your GitHub username and repository name</li>
+                <li>Create a Personal Access Token with 'repo' scope</li>
+                <li>Set your emergency email and SendGrid API key in GitHub Secrets</li>
+            </ul>
+            <button onclick="location.reload()">Refresh Page</button>
+        </div>
+
+        <div id="checkin-section">
+            <button id="checkin-btn" class="checkin-button">I'm Alive! ✓</button>
+            <p id="status-message"></p>
+        </div>
+
+        <div class="links">
+            <a href="dashboard.html">View Dashboard</a>
+        </div>
+    </div>
+
+    <script src="js/checkin.js"></script>
+</body>
+</html>

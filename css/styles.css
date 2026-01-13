@@ -1,0 +1,136 @@
+/* Daily Check-In Monitor Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.checkin-button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    margin: 2rem auto;
+    display: block;
+}
+
+.checkin-button:hover:not(:disabled) {
+    background: #45a049;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.checkin-button:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.checkin-button:hover:not(:disabled) {
+    background: #45a049;
+}
+
+.checkin-button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+#status-message {
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+.links {
+    margin-top: 2rem;
+}
+
+.links a {
+    color: #667eea;
+    text-decoration: none;
+    margin: 0 1rem;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Dashboard styles */
+.checkin-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin: 2rem 0;
+}
+
+.day {
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    padding: 0.5rem;
+    background: #f9f9f9;
+}
+
+.day.checked {
+    background: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.day.missed {
+    background: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.date {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.status {
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .checkin-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

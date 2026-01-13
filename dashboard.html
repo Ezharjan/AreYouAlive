@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-In Dashboard - Daily Check-In Monitor</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Check-In Dashboard</h1>
+        <p class="subtitle">Your last 7 days check-in history</p>
+
+        <div id="dashboard">
+            <p>Loading dashboard...</p>
+        </div>
+
+        <div class="links">
+            <a href="index.html">Back to Check-In</a>
+        </div>
+    </div>
+
+    <script>
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                // Fetch config
+                const configResponse = await fetch('config.yml');
+                if (!configResponse.ok) throw new Error('Config not found');
+                const configText = await configResponse.text();
+                const config = parseYaml(configText);
+
+                // Fetch checkins data
+                const checkinsResponse = await fetch(`https://api.github.com/repos/${config.repo_owner}/${config.repo_name}/contents/checkins.json`);
+                if (!checkinsResponse.ok) {
+                    document.getElementById('dashboard').innerHTML = '<p>No check-in data available yet.</p>';
+                    return;
+                }
+                const checkinsData = await checkinsResponse.json();
+                const checkinsText = atob(checkinsData.content);
+                const checkins = JSON.parse(checkinsText);
+
+                // Display last 7 days
+                const today = new Date();
+                const dashboard = document.getElementById('dashboard');
+                let html = '<div class="checkin-grid">';
+
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    const checked = checkins.includes(dateStr);
+                    html += `<div class="day ${checked ? 'checked' : 'missed'}">
+                        <div class="date">${date.toLocaleDateString()}</div>
+                        <div class="status">${checked ? '✓' : '✗'}</div>
+                    </div>`;
+                }
+
+                html += '</div>';
+                dashboard.innerHTML = html;
+
+            } catch (error) {
+                document.getElementById('dashboard').innerHTML = '<p>Error loading dashboard. Please check your configuration.</p>';
+                console.error(error);
+            }
+        }
+
+        // Simple YAML parser (basic)
+        function parseYaml(yaml) {
+            const lines = yaml.split('\n');
+            const config = {};
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (trimmed && !trimmed.startsWith('#')) {
+                    const [key, ...valueParts] = trimmed.split(':');
+                    if (key && valueParts.length > 0) {
+                        config[key.trim()] = valueParts.join(':').trim().replace(/^["']|["']$/g, '');
+                    }
+                }
+            });
+            return config;
+        }
+
+        loadDashboard();
+    </script>
+</body>
+</html>

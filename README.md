@@ -1,6 +1,10 @@
-# Daily Check-In Monitor  -  [“死了吗？”/ “活着吗？”]
+# Daily Check-In Monitor
 
-Short description: Open-source Python Flask app for daily wellness check-ins, automated email alerts, and a simple dashboard for caregivers, families, and seniors.
+## 基于'死了吗'/'活着吗'软件产生的灵感 - Inspired by 'Are You Alive' apps
+
+A simple, serverless daily check-in system that runs entirely on GitHub Pages and GitHub Actions. Get notified if you forget to check in daily.
+
+
 
 Keywords/Tags: Are You Alive; AreYouAlive; daily check-in; check-in monitor; check-in reminder; daily check-in app; wellness check; elderly monitoring; senior safety; caregiver alerts; family alerts; emergency contact; email alerts; automated alerts; Python; Flask; SMTP; background tasks; scheduled tasks; cron; responsive web app; mobile-friendly; accessibility; 'I'm Alive' button; check-in dashboard; 7-day history; health monitoring; fall detection; home safety; lone worker check-in; 老年人; 签到提醒; 每日签到; 活着吗; 死了吗.
 
@@ -12,126 +16,127 @@ Developed by [Alexander Ezharjan](https://ezharjan.github.io/).
 
 <br>
 
-基于 “死了吗”/“活着吗” 软件的灵感 — Inspired by "Are You Alive" apps
 
----
+### 🚀 One-Click Deployment
 
-## 🚀 Quick Start
+1. **Create a new GitHub repository** from this template
+2. **Enable GitHub Pages** in repository settings (Settings → Pages → Source: Deploy from a branch → main)
+3. **Create a Personal Access Token**:
+   - Go to [GitHub Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens)
+   - Generate new token with `repo` scope
+   - Copy the token
+4. **Edit `config.yml`** in your repository:
+   - Set `repo_owner` to your GitHub username
+   - Set `repo_name` to your repository name
+   - Set `emergency_email` to your contact email
+   - **Security Note**: Your Personal Access Token is now entered securely through the app interface and stored locally in your browser only.
+5. **Set up email notifications** (choose one option):
+   
+   **Option A: SendGrid (recommended)**
+   - Sign up at [SendGrid](https://sendgrid.com)
+   - Create an API key
+   - Add to GitHub Secrets: `SENDGRID_API_KEY`
+   - Verify your sender email in SendGrid
+   
+   **Option B: Direct SMTP (free, using Gmail)**
+   - For Gmail: Go to Google Account settings → Security → 2-Step Verification → App passwords
+   - Generate an App Password for "Mail"
+   - Add to GitHub Secrets: `SMTP_USERNAME` (your Gmail address), `SMTP_PASSWORD` (the App Password)
+   - Edit `config.yml` with your SMTP settings
+6. **Visit your site**: `https://your-username.github.io/your-repo-name/`
 
-### Prerequisites
-- Python 3.7 or higher
-- A Gmail account (recommended) or another SMTP provider for email delivery
+### ⚙️ Configuration
 
-### Installation
-1. Clone or download the project:
-   ```bash
-   git clone https://github.com/your/repo.git
-   cd AreYouAlive
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Set up environment variables:
-   - Copy `.env.example` to `.env` and fill in your values.
-     - On macOS / Linux: `cp .env.example .env`
-     - On Windows (PowerShell): `Copy-Item .env.example .env`
+Edit `config.yml` to customize:
 
-4. Run the application:
-   ```bash
-   python app.py
-   ```
+```yaml
+# Repository settings
+repo_owner: "your-github-username"
+repo_name: "daily-checkin-monitor"
 
----
+# NOTE: Personal Access Token is now entered securely via the app interface
+# Do NOT put your PAT in this file - it will be stored locally in your browser
 
-## ⚙️ Configuration
+# Check-in settings
+checkin_schedule: "08:00"  # Expected check-in time (UTC)
+alert_time: "20:00"        # When to check for missed check-ins (UTC)
+grace_period_hours: 4      # Hours of grace after schedule
 
-Configure the application using environment variables. Create a `.env` file with the following values:
+# Emergency contact
+emergency_email: "your-email@example.com"
 
-```bash
-# Required
-EMERGENCY_EMAIL=your-email@example.com          # Where to send alerts
-SMTP_USERNAME=your-gmail@gmail.com              # SMTP username
-SMTP_PASSWORD=your-app-password                 # SMTP password (App Password for Gmail)
-SMTP_FROM_EMAIL=your-gmail@gmail.com            # Sender email
-
-# Optional (defaults provided)
-SMTP_SERVER=smtp.gmail.com                      # SMTP server
-SMTP_PORT=587                                    # SMTP port
-CHECKIN_SCHEDULE=08:00                            # Expected check-in time (HH:MM)
-ALERT_TIME=20:00                                  # Time to check for missed check-ins (HH:MM)
-GRACE_PERIOD_HOURS=4                              # Hours of grace after schedule
+# SendGrid settings
+sendgrid_from_email: "noreply@yourdomain.com"
 ```
 
----
+### 📊 How It Works
 
-## 📊 How It Works
+1. **Daily Check-In**: Click the "I'm Alive!" button on the main page
+2. **Automated Monitoring**: GitHub Actions checks daily at the configured time
+3. **Email Alerts**: If no check-in detected, sends notification to emergency contact
+4. **Dashboard**: View your check-in history for the last 7 days
 
-1. Daily Check-In: Click the "Check In" button on the main page.
-2. Automated Monitoring: The server checks daily at the configured time for missed check-ins.
-3. Email Alerts: If no check-in is detected within the grace period, an alert is sent to the emergency contact.
-4. Dashboard: View a 7-day history of check-ins on `/dashboard`.
+### 🧪 Local Testing
 
----
+Before deploying to GitHub, you can test the application locally:
 
-## 🔧 Features
+#### Option 1: Simple Browser Test (Limited)
+1. Open `index.html` directly in your browser
+2. The UI will load, but check-in functionality will fail due to CORS restrictions
+3. Open `dashboard.html` to see the dashboard layout (will show no data initially)
 
-- ✅ Simple, clean interface with a prominent check-in button
-- ✅ Automated email notifications via SMTP
-- ✅ 7-day check-in history dashboard
-- ✅ Server-side data persistence
-- ✅ Scheduled monitoring with background tasks
-- ✅ Mobile-responsive design
-
----
-
-## 🧪 Local Testing
-
-1. Start the server:
+#### Option 2: Local Server (Recommended)
+1. **Using Python** (if installed):
    ```bash
-   python app.py
+   cd /path/to/your/project
+   python -m http.server 8000
    ```
-2. Test check-in:
-   - Visit `http://localhost:5000` and click the "Check In" button.
-   - Confirm you see a "Check-in successful!" message and a log entry in the server output.
-3. Test the dashboard:
-   - Visit `http://localhost:5000/dashboard` and verify the 7-day grid renders correctly.
-4. Test email notifications (optional):
-   - Wait until the configured alert time, or temporarily set `ALERT_TIME` to a time near the current time to test immediately.
+   Then visit `http://localhost:8000`
 
----
+2. **Using Node.js** (if installed):
+   ```bash
+   npm install -g http-server
+   cd /path/to/your/project
+   http-server
+   ```
+   Then visit `http://localhost:8080`
 
-## 🔎 Troubleshooting
+3. **Using VS Code**:
+   - Install "Live Server" extension
+   - Right-click `index.html` → "Open with Live Server"
 
-**Application won't start**
-- Ensure the Python version is 3.7 or higher: `python --version`.
-- Install dependencies: `pip install -r requirements.txt`.
-- Verify required environment variables are set.
-- Check for port conflicts (default port 5000).
+#### Testing Checklist
+- [x] Page loads without errors
+- [x] Config validation shows setup section (since config has placeholder values)
+- [x] When config is set, app prompts for Personal Access Token (enter a test token or skip for UI testing)
+- [x] Large round "I'm Alive!" button displays prominently
+- [x] Dashboard shows "No check-in data available yet"
+- [x] No console errors in browser dev tools
+- [x] Mobile responsive (resize browser window)
 
-**Emails not sending**
-- Verify SMTP credentials and server settings.
-- For Gmail, use an App Password (not your regular password).
-- Check spam/junk folders and server logs for SMTP errors.
+**Note**: Full check-in functionality requires a GitHub repository. API calls will fail locally due to CORS, but you can verify the UI and logic.
 
-**Check-in not working**
-- Check the browser console for JavaScript errors (F12 → Console).
-- Confirm the server is running and API endpoints are reachable.
-- Verify CORS settings if accessing from another domain.
+### 🔧 Troubleshooting
 
-**Dashboard not loading**
-- Ensure `/api/checkins` is accessible.
-- Confirm the data file (e.g., `checkins.json`) exists and is readable.
-- Look for JavaScript errors in the browser console.
+**Check-in button not working:**
+- Verify `config.yml` is properly configured
+- Check browser console for errors
+- Ensure Personal Access Token has `repo` scope
 
----
+**No email notifications:**
+- For SendGrid: Confirm SendGrid API key is set in GitHub Secrets and sender email is verified
+- For SMTP: Confirm SMTP_USERNAME and SMTP_PASSWORD are set in GitHub Secrets, and config.yml has correct SMTP settings
+- Check SendGrid/SMTP sender email is verified
+- Review GitHub Actions logs for errors
 
-## 📝 License
+**GitHub Pages not loading:**
+- Ensure Pages is enabled in repository settings
+- Wait a few minutes after setup for deployment
 
-This project is licensed under the MIT License — see the `LICENSE` file for details.
+### 📝 License
 
----
+MIT License - Feel free to use and modify for personal use.
 
-## 🤝 Contributing
+### 🤝 Contributing
 
-This project is intended for personal use, but pull requests and improvements are welcome. Please open an issue or a PR if you'd like to suggest changes.
+This is a simple project for personal use. Pull requests welcome for improvements!
