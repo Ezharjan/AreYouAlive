@@ -128,7 +128,7 @@ GRACE_PERIOD_HOURS=4                              # Hours of grace after schedul
 
 ## 📝 License
 
-MIT License — feel free to use and modify for personal projects.
+This project is licensed under the MIT License — see the `LICENSE` file for details.
 
 ---
 
