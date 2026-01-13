@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software in a publication, please cite it as below."
+title: "AreYouAlive"
+version: "0.1.0"
+authors:
+  - family-names: "Ezharjan"
+    given-names: "Alexander"
+    orcid: ""
+license: "MIT"
+date-released: "2026-01-12"
+url: "https://ezharjan.github.io/"
+abstract: "Open-source Python Flask app for daily wellness check-ins with automated email alerts and a simple dashboard for caregivers, families, singles, and elderly individuals."
+keywords:
+  - "daily check-in"
+  - "check-in monitor"
+  - "wellness"
+  - "caregiver alerts"
+  - "email alerts"
+  - "Flask"
+  - "Python"
