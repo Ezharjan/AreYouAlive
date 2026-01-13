@@ -1,0 +1,3 @@
+# Allow all web crawlers to access the site
+User-agent: *
+Disallow:

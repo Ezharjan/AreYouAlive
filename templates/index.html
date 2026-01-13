@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Check-In Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+</head>
+<body>
+    <div class="container">
+        <h1>Daily Check-In Monitor</h1>
+        <p class="subtitle">Inspired by "Are You Alive" (死了吗) - Keep track of your daily check-ins</p>
+
+        <div id="checkin-section">
+            <button id="checkin-btn" class="checkin-button circle" aria-live="polite" aria-label="Check in">Check In</button>
+            <p id="status-message"></p>
+        </div>
+
+        <div class="links">
+            <a href="/dashboard">View Dashboard</a>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/checkin.js') }}"></script>
+</body>
+</html>

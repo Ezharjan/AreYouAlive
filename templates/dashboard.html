@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-In Dashboard - Daily Check-In Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+</head>
+<body>
+    <div class="container">
+        <h1>Check-In Dashboard</h1>
+        <p class="subtitle">Your last 7 days check-in history</p>
+
+        <div class="view-controls">
+            <button id="calendar-view-btn" class="view-toggle active">Calendar</button>
+            <button id="list-view-btn" class="view-toggle">List</button>
+        </div>
+
+        <div id="calendar-container">
+            <p>Loading calendar...</p>
+        </div>
+
+        <div id="list-container" style="display:none">
+            <p>Loading list...</p>
+        </div>
+
+        <div class="links">
+            <a href="/">Back to Check-In</a>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
